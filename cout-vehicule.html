@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Coût véhicule</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600&display=swap">
+<style>
+:root{--bg:#eceff2;--card:#fff;--tx:#14202b;--mu:#5b6a77;--ac:#0a6c74;--on:#fff;--ac2:#dbebed;--bd:#d3dae0;--wa:#a3470a;--dg:#b3261e;--cl:#10222f;--cl2:#091821;--clt:#eaf2f6;--clm:#8fa5b4;--tab:70px;
+--f1:"Barlow",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--f2:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c1218;--card:#151d26;--tx:#e8eef2;--mu:#93a2af;--ac:#4cc3cf;--on:#05222a;--ac2:#12303a;--bd:#263340;--wa:#f0a64a;--dg:#c93c32;--cl:#182733;--cl2:#0d1a23}}
+:root[data-theme="dark"]{--bg:#0c1218;--card:#151d26;--tx:#e8eef2;--mu:#93a2af;--ac:#4cc3cf;--on:#05222a;--ac2:#12303a;--bd:#263340;--wa:#f0a64a;--dg:#c93c32;--cl:#182733;--cl2:#0d1a23}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{height:auto;margin:0;background:var(--bg);color:var(--tx);font:17px/1.4 var(--f1);-webkit-text-size-adjust:100%}
+body{padding-bottom:calc(var(--tab) + 28px + env(safe-area-inset-bottom,0px))}
+#app{max-width:520px;margin:0 auto;padding:16px 16px 8px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+h2{margin:8px 0 16px;font:600 30px/1.05 var(--f2);letter-spacing:.005em}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-4px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:14px}
+.row{display:flex;gap:10px;align-items:center}.row>*{flex:1;min-width:0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.two>div{min-width:0}.two label:first-child{margin-top:14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.k{font-size:13px;color:var(--mu)}
+.big{font:600 52px/1 var(--f2);font-variant-numeric:tabular-nums}
+.val{font:600 24px var(--f2);font-variant-numeric:tabular-nums}
+.u{font:400 15px var(--f1);color:var(--mu)}
+.wa{color:var(--wa)}
+label{display:block;margin:14px 0 6px;font-size:14px;font-weight:500;color:var(--mu)}
+.card label:first-child{margin-top:0}
+input,select{width:100%;min-height:48px;padding:10px 12px;font:inherit;font-size:17px;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:8px}
+input[type=checkbox],input[type=radio]{width:22px;height:22px;min-height:0;margin:0 12px 0 0;accent-color:var(--ac)}
+.cb{display:flex;align-items:center;min-height:48px;margin:2px 0;font-size:17px;font-weight:400;color:var(--tx);cursor:pointer}
+button{font:inherit;font-weight:500;min-height:44px;padding:0 16px;border-radius:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);cursor:pointer}
+button:active{filter:brightness(.94)}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid var(--ac);outline-offset:1px}
+button.pr{display:block;width:100%;min-height:54px;margin-top:16px;background:var(--ac);color:var(--on);border:0;font-size:18px;font-weight:600}
+.sv{position:sticky;bottom:calc(var(--tab) + 12px + env(safe-area-inset-bottom,0px));z-index:5;box-shadow:0 0 0 12px var(--bg)}
+.bk{display:inline-flex;align-items:center;gap:2px;min-height:44px;padding:0 10px 0 0;border:0;background:none;color:var(--ac);font-weight:600}
+.ib{width:44px;padding:0;display:inline-grid;place-items:center}
+.ib.dg{width:auto;padding:0 12px;background:var(--dg);color:#fff;border-color:transparent}
+.li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd);font-size:15px}
+.li:last-child{border:0}.li>span:last-child{display:flex;gap:6px;flex:none}
+.info{background:var(--ac2);border-left:3px solid var(--ac);border-radius:6px;padding:10px 12px;margin-top:12px;font-size:15px}
+table{width:100%;border-collapse:collapse}
+th{font-size:13px;font-weight:500;color:var(--mu)}
+td,th{padding:8px 8px 8px 0;border-bottom:1px solid var(--bd);font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+
+/* tableau de bord */
+.hero{margin-bottom:24px;padding:16px 16px 18px;border-radius:18px;background:var(--cl);color:var(--clt)}
+.hero select{background:var(--cl2);color:var(--clt);border:1px solid #2b4456;font-weight:500}
+.odo{display:flex;gap:4px;margin:18px 0 6px}
+.odo span{flex:1;max-width:46px;height:60px;display:grid;place-items:center;background:var(--cl2);border:1px solid #223a4a;border-radius:6px;font:600 40px/1 var(--f2);font-variant-numeric:tabular-nums}
+.odo .z{color:#4a6171}
+.odl,.cap{font-size:13px;color:var(--clm)}
+.cost{display:flex;align-items:baseline;gap:8px;margin-top:22px}
+.cn{font:600 58px/1 var(--f2);font-variant-numeric:tabular-nums}
+.cu{font:500 20px var(--f2);color:var(--clm)}
+.bar{display:flex;gap:3px;height:10px;margin:14px 0 10px}
+.bar i{display:block;border-radius:3px;min-width:4px}
+.bar.e{background:var(--cl2);border-radius:3px}
+.leg{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px}
+.leg span{display:inline-flex;align-items:center;gap:6px;color:var(--clm)}
+.leg i{width:10px;height:10px;border-radius:2px}
+.leg b{color:var(--clt);font-weight:600;font-variant-numeric:tabular-nums}
+.sec{margin:0 0 22px}
+.sec>h3{margin:0 0 2px;font:600 14px var(--f1);color:var(--mu)}
+.ln{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--bd)}
+.ln:last-child{border-bottom:0}
+.ln b{font:600 24px var(--f2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ln b i{font:400 14px var(--f1);font-style:normal;color:var(--mu)}
+.act{display:flex;align-items:center;gap:14px;width:100%;min-height:62px;padding:8px 0;border:0;border-bottom:1px solid var(--bd);border-radius:0;background:none;text-align:left;font-size:17px}
+.act:last-child{border-bottom:0}
+.ai{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:var(--ac2);color:var(--ac)}
+.ch{margin-left:auto;color:var(--mu)}
+
+/* navigation basse + message */
+#tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;justify-content:center;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px)}
+#tabs>div{display:grid;grid-template-columns:repeat(5,1fr);width:100%;max-width:520px}
+#tabs button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;height:var(--tab);padding:0;border:0;border-radius:0;background:none;color:var(--mu);font-size:12px;font-weight:500}
+#tabs button.on{color:var(--ac);font-weight:600}
+#tabs button.on::before{content:"";position:absolute;top:0;left:24%;right:24%;height:3px;border-radius:0 0 3px 3px;background:var(--ac)}
+#tabs .ic{width:23px;height:23px}
+#toast{position:fixed;left:16px;right:16px;bottom:calc(var(--tab) + 16px + env(safe-area-inset-bottom,0px));max-width:488px;margin:0 auto;z-index:30;padding:12px 14px;border-radius:10px;background:var(--tx);color:var(--bg);font-size:15px;opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .18s,transform .18s}
+#toast.show{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.top{display:flex;justify-content:space-between;align-items:center}
+.top{gap:8px}.top h1{font-size:22px;white-space:nowrap;min-width:0}.top button{display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;padding:0 12px}
+h1{margin:4px 0 12px;font:600 30px/1.05 var(--f2)}
+.vsel{min-height:58px;font-size:22px;font-weight:600}
+.grid .pr{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:0;padding:0 8px;font-size:17px}
+.grid .card{margin-bottom:0}.grid+.grid{margin-top:12px}.grid{margin-bottom:12px}
+#tabs>div{display:block;padding:8px 16px}
+#tabs button.rt{width:100%;height:54px;flex-direction:row;gap:6px;background:var(--ac);color:var(--on);border-radius:10px;font-size:18px;font-weight:600}
+#tabs button.rt .ic{width:22px;height:22px}
+input[type=radio]{border-radius:50%}
+.card .tar .two label:first-child{margin-top:12px}
+.tar+.tar{margin-top:16px;padding-top:2px;border-top:1px solid var(--bd)}
+</style></head>
+<body><div id="app"></div><nav id="tabs" aria-label="Navigation"></nav>
+<script>
+window.addEventListener('error',e=>{const d=document.createElement('div');d.style.cssText='position:fixed;top:8px;left:8px;right:8px;z-index:99;background:#b3261e;color:#fff;padding:10px 12px;border-radius:8px;font:14px system-ui,sans-serif';d.textContent='Erreur : '+e.message+' (ligne '+e.lineno+')';document.body.appendChild(d)});
+const FU=['Gasoil','98','95-E5','95-E10','E85','GPL','Électrique'],ET={'Gasoil':0,'98':5,'95-E5':5,'95-E10':10,'E85':85,'GPL':0,'Électrique':0};
+window.alert=m=>{let t=document.getElementById('toast');if(!t){t=document.createElement('div');t.id='toast';t.setAttribute('role','status');document.body.appendChild(t)}t.textContent=m;t.className='show';clearTimeout(window._tt);window._tt=setTimeout(()=>{t.className=''},4000)};
+const IC={home:'<path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/>',fuel:'<path d="M5 21V5a2 2 0 012-2h6a2 2 0 012 2v16M4 21h12M5 10h10M15 8h2.5A1.5 1.5 0 0119 9.5V16a1.5 1.5 0 003 0V9l-3-3"/>',pin:'<path d="M12 21s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',doc:'<path d="M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6"/>',sliders:'<path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/>',tyre:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><path d="M12 3v5.5M12 15.5V21M3 12h5.5M15.5 12H21"/>',wrench:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',road:'<path d="M8 3L4 21M16 3l4 18M12 4v3M12 11v3M12 18v3"/>',gauge:'<path d="M4 17a8 8 0 1116 0"/><path d="M12 17l4-5"/>',chev:'<path d="M9 6l6 6-6 6"/>',back:'<path d="M15 6l-6 6 6 6"/>',edit:'<path d="M4 20l1-4L16 5l3 3L8 19zM14 7l3 3"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',download:'<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>'};
+const ic=n=>`<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${IC[n]}</svg>`;
+let S={cars:[],log:[],sel:null,sites:[],tolls:[]},V={n:'home',c:null,e:null};
+try{S=Object.assign(S,JSON.parse(localStorage.getItem('cv1')||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem('cv1',JSON.stringify(S))}catch(e){}};
+const $=i=>document.getElementById(i),v=i=>$(i).value;
+const f=(n,d=2)=>n==null||isNaN(n)?'—':n.toFixed(d).replace('.',',');
+const car=id=>S.cars.find(c=>c.id==id);
+const cur=()=>car(S.sel)||S.cars.find(c=>c.main)||S.cars[0];
+const cur2=()=>car(V.c)||cur();
+const nm=c=>((c.marque||'')+' '+(c.modele||'')).trim()||'Véhicule';
+const today=()=>new Date().toISOString().slice(0,10);
+const ent=(c,t,fn)=>S.log.filter(e=>e.car==c&&(!t||e.type==t)&&(!fn||fn(e))).sort((a,b)=>a.km-b.km);
+const mk=e=>e.type=='km'||!!e.init||(e.type=='fuel'&&!!e.perso);
+function mdl(l){const d={};let p=null;l.forEach(e=>{if(mk(e)){d[e.id]=p!=null?e.km-p:null;p=e.km}else d[e.id]=null});return d}
+function rate(l){if(l.length<2)return{};const sp=l[l.length-1].km-l[0].km;if(sp<=0)return{};
+ return{km:sp/(l.length-1),eur:l.slice(1).reduce((a,e)=>a+(e.eur||0),0)/sp*100,vol:l.slice(1).reduce((a,e)=>a+(e.vol||0),0)/sp*100}}
+function frate(l,co){const fu=l.filter(e=>e.full);if(fu.length<2)return{};const a=fu[0],b=fu[fu.length-1],sp=b.km-a.km;if(sp<=0)return{};
+ const m=l.filter(e=>e.km>a.km&&e.km<=b.km);return{vol:m.reduce((x,e)=>x+(e.vol||0),0)/sp*100,eur:m.reduce((x,e)=>x+((co&&e.payer=='perso')?0:(e.eur||0)),0)/sp*100}}
+function tyreRate(c){const l=ent(c,'tyre'),R=l.filter(e=>e.sub!='Réparation'),nb=e=>e.nb||4;
+ if(!R.length)return{};
+ const a=R[0],all=ent(c),mx=all[all.length-1].km,out={},m=[0,1,2,3].map(()=>(car(c)||{}).km0||0),L=[];
+ R.forEach(e=>{for(let k=0;k<Math.min(nb(e),4);k++){let j=0;for(let i=1;i<4;i++)if(m[i]<m[j])j=i;if(e.km>m[j])L.push(e.km-m[j]);m[j]=e.km}});
+ if(L.length)out.km=L.reduce((x,y)=>x+y,0)/L.length;
+ if(R.length>=2){const b=R[R.length-1],sp=b.km-a.km;
+  if(sp>0)out.eur=l.filter(e=>e.km>a.km&&e.km<=b.km).reduce((x,e)=>x+(e.eur||0),0)/sp*100;
+  return out}
+ const sp=mx-a.km;
+ if(sp>0){out.eur=l.filter(e=>e.km>=a.km).reduce((x,e)=>x+(e.eur||0),0)/sp*100;out.est=true}
+ return out}
+function insur(id){const c=car(id),T=((c&&c.assur)||[]).filter(t=>t.date&&t.eur>=0).slice().sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0),out={};
+ if(!T.length)return out;
+ const D=d=>Date.parse(d+'T00:00:00Z')/864e5,dr=t=>(t.per=='mensuel'?t.eur*12:t.eur)/365,nw=today();
+ let t0=null;T.forEach(x=>{if(x.date<=nw)t0=x});if(t0)out.day=dr(t0);
+ let cost=0;T.forEach((t,i)=>{const e=i+1<T.length&&T[i+1].date<nw?T[i+1].date:nw;if(e>t.date)cost+=(D(e)-D(t.date))*dr(t)});
+ const all=ent(id),last=all.length?all[all.length-1].km:0;
+ if(cost>0){out.cost=cost;if(last>0)out.km=cost/last*100}
+ return out}
+function maintRate(c){const l=ent(c,'maint'),V=l.filter(e=>(e.sub||'Vidange')=='Vidange'),O=l.filter(e=>e.sub=='Accessoire'||e.sub=='Réparation'||e.sub=='Lavage'),out={},r=[],iv=[];
+ for(let i=0;i<V.length;i++){const d=V[i].km-(i?V[i-1].km:0);if(d>0){r.push((V[i].eur||0)/d*100);iv.push(d)}}
+ if(r.length){out.v=r.reduce((a,b)=>a+b,0)/r.length;out.km=iv.reduce((a,b)=>a+b,0)/iv.length}
+ const all=ent(c),last=all.length?all[all.length-1].km:0;
+ if(O.length&&last>0)out.o=O.reduce((a,e)=>a+(e.eur||0),0)/last*100;
+ if(out.v!=null||out.o!=null)out.eur=(out.v||0)+(out.o||0);
+ return out}
+function stats(c){const F=frate(ent(c,'fuel')),T=tyreRate(c),M=maintRate(c);
+ const t=[F.eur,T.eur,M.eur].filter(x=>x!=null);return{F,T,M,tot:t.length?t.reduce((a,b)=>a+b,0):null}}
+const fld=(l,h)=>`<label>${l}</label>${h}`;
+const carSel=()=>{const c=cur2();return fld('Véhicule',`<select onchange="V.c=this.value;render()">${S.cars.map(x=>`<option value="${x.id}" ${x.id==c.id?'selected':''}>${nm(x)}${x.main?' ★':''}</option>`).join('')}</select>`)};
+const need=()=>`<div class="card"><b>Aucun véhicule</b><p class="k" style="margin:6px 0 0">Ajoutez votre véhicule pour enregistrer pleins, entretiens et kilomètres.</p><button class="pr" onclick="go('cf',null,null)">Ajouter un véhicule</button></div>`;
+function go(n,c,e){V.d=null;V.imp=null;V.t=null;V.n=n;if(c!==undefined)V.c=c;if(e!==undefined)V.e=e;scrollTo(0,0);render()}
+
+function home(){const c=cur();
+ let h=`<div class="top"><h1>Coût véhicule</h1><div style="display:flex;gap:8px"><button onclick="expCSV()" aria-label="Exporter en CSV">${ic('download')} Exporter</button><button onclick="go('params')" aria-label="Paramètres">⚙️</button></div></div>`;
+ if(!c)return h+need();
+ const s=stats(c.id),A=insur(c.id);
+ h+=`<select class="vsel" aria-label="Véhicule" onchange="S.sel=this.value;save();render()">${S.cars.map(x=>`<option value="${x.id}" ${x.id==c.id?'selected':''}>${nm(x)}${x.main?' ★':''}</option>`).join('')}</select>
+ <div class="card" style="margin-top:12px"><div class="k">Coût total estimé</div><div class="val">${f(s.tot)} <span class="u">€/100 km</span></div></div>
+ <div class="grid">
+ <div class="card"><div class="k">Moyenne</div><div class="val">${f(s.F.vol)} <span class="u">L/100km</span></div></div>
+ <div class="card"><div class="k">Carburant</div><div class="val">${f(s.F.eur)} <span class="u">€/100km</span></div></div>
+ <div class="card"><div class="k">Pneus : 2 pneus tous les</div><div class="val">${f(s.T.km,0)} <span class="u">km</span></div></div>
+ <div class="card"><div class="k">Pneus${s.T.est?' (estimé)':''}</div><div class="val">${f(s.T.eur)} <span class="u">€/100km</span></div></div>
+ <div class="card"><div class="k">Assurance</div><div class="val">${f(A.km)} <span class="u">€/100km</span></div><div class="k">${f(A.day)} €/jour</div></div>
+ <div class="card"><div class="k">Entretiens</div><div class="val">${f(s.M.eur)} <span class="u">€/100km</span></div></div></div>
+ <div class="grid"><button class="pr" onclick="go('fuel',null)">⛽ Carburant</button><button class="pr" onclick="go('km',null)">📍 Suivi des km</button>
+ <button class="pr" onclick="go('maint',null)">🔧 Entretien</button><button class="pr" onclick="go('tyre',null)">🛞 Pneumatique</button>
+ <button class="pr" onclick="go('toll',null)">🛣 Péage perso</button><button class="pr" onclick="go('rc',null)">📄 Récap PDF</button></div>
+ <p class="k">Les moyennes apparaissent à partir de 2 entrées par catégorie (carburant : calculé entre pleins, case « Plein » cochée).</p>`;
+ return h}
+
+const CC=['table','id','car','type','date','km','vol','eur','ppl','fuel','full','eth','perso','pro','pkm','pL','site','sub','init','payer','marque','modele','moteur','annee','pneu','immat','reservoir','proprio','main','fuels','nb','km0','assur'];
+const cq=x=>{x=x==null?'':typeof x=='boolean'?(x?1:0):Array.isArray(x)?x.join('|'):String(x);return /[;"\n\r]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x};
+function toCSV(){const L=[CC.join(';')],row=o=>L.push(CC.map(k=>cq(o[k])).join(';'));
+ S.cars.forEach(c=>row(Object.assign({},c,{table:'vehicule',assur:(c.assur||[]).map(t=>[t.date,t.eur,t.per].join('~'))})));S.log.forEach(e=>row(Object.assign({},e,{table:'entree'})));
+ (S.sites||[]).forEach(x=>row({table:'site',site:x}));(S.tolls||[]).forEach(t=>row(Object.assign({},t,{table:'peage'})));row({table:'reglage',id:S.sel});return L.join('\r\n')}
+function parseCSV(t){t=t.replace(/^\ufeff/,'');const sep=t.split(/\r?\n/)[0].includes(';')?';':',',rows=[];let r=[],c='',q=false;
+ for(let i=0;i<t.length;i++){const h=t[i];
+  if(q){if(h=='"'){if(t[i+1]=='"'){c+='"';i++}else q=false}else c+=h}
+  else if(h=='"')q=true;else if(h==sep){r.push(c);c=''}else if(h=='\n'||h=='\r'){if(h=='\r'&&t[i+1]=='\n')i++;r.push(c);c='';rows.push(r);r=[]}else c+=h}
+ if(c!==''||r.length){r.push(c);rows.push(r)}return rows}
+function fromCSV(t){const R=parseCSV(t).filter(r=>r.length>1),h=R.shift()||[];if(h[0]!='table')throw 0;
+ const N=['km','vol','eur','ppl','eth','pkm','pL','reservoir','nb','km0'],B=['full','perso','pro','init','main'],out={cars:[],log:[],tolls:[],sites:[],sel:null},cm={},rows=[];let n=0;
+ const cl=x=>/^\d+$/.test(x),nid=()=>Date.now()+(++n);
+ R.forEach(r=>{const o={};h.forEach((k,i)=>{let x=r[i];if(x===undefined||x==='')return;
+  if(N.includes(k))x=+String(x).replace(',','.');else if(B.includes(k))x=/^(1|true|vrai)$/i.test(x);
+  else if(k=='date'){const m=/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(x);if(m)x=m[3]+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0')}
+  o[k]=x});rows.push(o)});
+ rows.filter(o=>o.table=='vehicule').forEach(o=>{const old=String(o.id);o.id=cl(old)?+old:nid();cm[old]=o.id;delete o.table;
+  o.fuels=(typeof o.fuels=='string'?o.fuels:'').split('|').filter(Boolean);o.main=!!o.main;o.assur=(typeof o.assur=='string'?o.assur:'').split('|').filter(Boolean).map(x=>{const q=x.split('~');return{date:q[0],eur:+q[1],per:q[2]}});out.cars.push(o)});
+ rows.forEach(o=>{if(o.table=='entree'){delete o.table;o.id=o.id!=null&&cl(String(o.id))?+o.id:nid();let c=cm[String(o.car)];if(c==null&&out.cars.length==1)c=out.cars[0].id;o.car=c;out.log.push(o)}
+  else if(o.table=='peage'){delete o.table;o.id=o.id!=null&&cl(String(o.id))?+o.id:nid();let c=cm[String(o.car)];if(c==null&&out.cars.length==1)c=out.cars[0].id;o.car=c;out.tolls.push(o)}
+  else if(o.table=='site'&&o.site)out.sites.push(o.site);else if(o.table=='reglage'&&o.id!=null)out.sel=cm[String(o.id)]||null});
+ return out}
+const GD=()=>S.gd||(S.gd={cid:'',folder:'Coût véhicule'});
+let _gt=null,_gx=0;
+function gLoad(){return new Promise((ok,ko)=>{if(window.google&&google.accounts&&google.accounts.oauth2)return ok();let s=document.getElementById('gsi');
+ if(!s){s=document.createElement('script');s.id='gsi';s.src='https://accounts.google.com/gsi/client';s.async=true;document.head.appendChild(s)}
+ s.addEventListener('load',()=>ok());s.addEventListener('error',()=>{s.remove();ko(new Error('Google indisponible (hors ligne ?)'))})})}
+function gTok(){if(_gt&&Date.now()<_gx)return Promise.resolve(_gt);
+ return gLoad().then(()=>new Promise((ok,ko)=>{const g=GD();
+  const c=google.accounts.oauth2.initTokenClient({client_id:g.cid,scope:'https://www.googleapis.com/auth/drive.file',
+   callback:r=>{if(r.error)return ko(new Error(r.error_description||r.error));_gt=r.access_token;_gx=Date.now()+(r.expires_in-60)*1000;g.ok=1;save();ok(_gt)},
+   error_callback:e=>ko(new Error(e&&e.type=='popup_blocked_by_browser'?'Fenêtre Google bloquée par le navigateur':'Connexion Google annulée'))});
+  c.requestAccessToken({prompt:g.ok?'':'consent'})}))}
+async function gF(url,o){const run=async()=>{const t=await gTok();return fetch(url,Object.assign({},o,{headers:Object.assign({Authorization:'Bearer '+t},o&&o.headers)}))};
+ let r=await run();if(r.status==401){_gt=null;r=await run()}
+ if(!r.ok){let m='';try{m=(await r.json()).error.message}catch(e){}throw new Error('Drive '+r.status+(m?' : '+m:''))}return r.json()}
+const gq=x=>String(x).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+async function gDrive(name,blob,type,over){const g=GD(),fn=g.folder||'Coût véhicule',A='https://www.googleapis.com/drive/v3/files',U='https://www.googleapis.com/upload/drive/v3/files';
+ let r=await gF(A+'?fields=files(id)&q='+encodeURIComponent("mimeType='application/vnd.google-apps.folder' and trashed=false and name='"+gq(fn)+"'"));
+ let fid=r.files[0]&&r.files[0].id;
+ if(!fid){r=await gF(A+'?fields=id',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:fn,mimeType:'application/vnd.google-apps.folder'})});fid=r.id}
+ let id=null;
+ if(over){r=await gF(A+'?fields=files(id)&q='+encodeURIComponent("trashed=false and name='"+gq(name)+"' and '"+fid+"' in parents"));id=r.files[0]&&r.files[0].id}
+ if(id)await gF(U+'/'+id+'?uploadType=media&fields=id',{method:'PATCH',headers:{'Content-Type':type},body:blob});
+ else{const b='cvb'+Date.now(),pre='--'+b+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify({name,parents:[fid]})+'\r\n--'+b+'\r\nContent-Type: '+type+'\r\n\r\n';
+  await gF(U+'?uploadType=multipart&fields=id',{method:'POST',headers:{'Content-Type':'multipart/related; boundary='+b},body:new Blob([pre,blob,'\r\n--'+b+'--'])})}
+ return fn+'/'+name}
+async function saveFile(name,blob,type,fixed){
+ if(S.gd&&S.gd.cid){const p=await gDrive(fixed||name,blob,type,!!fixed);alert('Enregistré dans Drive : '+p);return}
+ const d=window.claude&&claude.use?await claude.use('downloads'):null;
+ if(d){await d.save({filename:name,data:blob});return}
+ const file=new File([blob],name,{type:type});
+ if(navigator.canShare&&navigator.canShare({files:[file]})){
+  try{await navigator.share({files:[file],title:name});return}catch(e){if(e&&e.name=='AbortError')return}}
+ const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}
+async function expCSV(){
+ try{await saveFile('cout-vehicule-'+today()+'.csv',new Blob(['\ufeff'+toCSV()],{type:'text/csv;charset=utf-8'}),'text/csv','cout-vehicule.csv')}catch(e){if(!e||e.code!='declined')alert('Échec : '+((e&&(e.message||e.code))||''))}}
+function impF(el){const fl=el.files[0];if(!fl)return;const rd=new FileReader();
+ rd.onload=()=>{try{V.imp=fromCSV(String(rd.result));if(!V.imp.cars.length&&!V.imp.log.length)throw 0;V.d=null;render()}catch(e){V.imp=null;alert('Fichier CSV non reconnu')}};rd.readAsText(fl,'utf-8')}
+function doImp(rep){const d=V.imp;if(!d)return;
+ if(rep){if(V.d!='imp'){V.d='imp';render();return}S.cars=d.cars;S.log=d.log;S.tolls=d.tolls||[];S.sites=d.sites;S.sel=d.sel||(d.cars[0]&&d.cars[0].id)||null}
+ else{d.cars.forEach(c=>{if(!car(c.id))S.cars.push(c)});const ids=new Set(S.log.map(e=>e.id));d.log.forEach(e=>{if(!ids.has(e.id))S.log.push(e)});d.sites.forEach(x=>{if(!S.sites.includes(x))S.sites.push(x)});{const ti=new Set(S.tolls.map(t=>t.id));(d.tolls||[]).forEach(t=>{if(!ti.has(t.id))S.tolls.push(t)})}if(!S.sel&&d.sel)S.sel=d.sel}
+ V.imp=null;V.d=null;save();render();alert('Import terminé')}
+const backup=()=>`<div class="card" style="margin-top:12px"><div class="k">Sauvegarde (CSV)</div><div class="row" style="margin-top:8px"><button onclick="expCSV()">⬇ Exporter</button><button onclick="$('imp').click()">⬆ Importer</button></div>
+ <input type="file" id="imp" accept=".csv,text/csv,text/plain" style="display:none" onchange="impF(this)">
+ ${V.imp?`<div class="info">Fichier lu : ${V.imp.cars.length} véhicule(s), ${V.imp.log.length} entrée(s) (${V.imp.log.filter(e=>e.type=='km').length} relevés km, ${V.imp.log.filter(e=>e.type=='fuel').length} pleins, ${V.imp.log.filter(e=>e.type=='tyre').length} pneus, ${V.imp.log.filter(e=>e.type=='maint').length} entretiens).${V.imp.log.some(e=>!V.imp.cars.some(c=>c.id==e.car))?'<br><span class="wa">⚠ certaines entrées ne correspondent à aucun véhicule du fichier.</span>':''}<div class="row" style="margin-top:8px"><button onclick="doImp(1)">${V.d=='imp'?'Confirmer ?':'Remplacer'}</button><button onclick="doImp(0)">Fusionner</button></div></div>`:''}</div>`;
+const gdCard=()=>{const g=GD(),q=x=>String(x||'').replace(/"/g,'&quot;');return `<div class="card" style="margin-top:12px"><div class="k">Google Drive (export sans question)</div>
+ ${fld('Client ID Google',`<input id="gcid" value="${q(g.cid)}" placeholder="xxxx.apps.googleusercontent.com" autocapitalize="off" autocorrect="off" spellcheck="false">`)}
+ ${fld('Dossier Drive',`<input id="gfd" value="${q(g.folder||'Coût véhicule')}">`)}
+ <div class="row" style="margin-top:12px"><button onclick="saveGd()">Enregistrer</button><button onclick="saveGd(1)">Tester</button></div>
+ <div class="info">${g.cid?'Drive activé : « Exporter » écrit <b>cout-vehicule.csv</b> dans le dossier, en remplaçant le fichier précédent.':'Vide : l\'export passe par le menu de partage du téléphone.'}</div></div>`};
+function saveGd(t){const g=GD(),c=v('gcid').trim();if(c!=g.cid){g.ok=0;_gt=null}g.cid=c;g.folder=v('gfd').trim()||'Coût véhicule';save();if(c)gLoad().catch(()=>{});
+ if(t){if(!c){alert('Renseignez le Client ID');return}gDrive('test.txt',new Blob(['ok']),'text/plain',true).then(p=>alert('Connexion réussie : '+p)).catch(e=>alert('Échec : '+e.message));return}
+ alert(c?'Drive activé':'Drive désactivé');render()}
+function params(){let h=`<h2>Réglages</h2><div class="card"><div class="k">Véhicules</div>`;
+ h+=S.cars.length?S.cars.map(c=>`<div class="li"><span>${nm(c)}${c.main?' ★':''}<br><span class="k">${c.immat||''} ${(c.fuels||[]).join(', ')}</span></span><span><button onclick="go('cf',null,${c.id})">Modifier</button> <button class="ib ${V.d=='c'+c.id?'dg':''}" aria-label="Supprimer" onclick="delCar(${c.id})">${V.d=='c'+c.id?'Supprimer ?':ic('x')}</button></span></div>`).join(''):'<span class="k">Aucun véhicule</span>';
+ return h+`</div><button class="pr" onclick="go('cf',null,null)">Ajouter un véhicule</button>`+backup()+gdCard()}
+
+function cform(){const x=car(V.e)||{fuels:[]},ini=S.log.find(e=>e.car==V.e&&e.init)||{},i=(id,l,val,t='text')=>fld(l,`<input id="${id}" type="${t}" value="${val==null?'':val}">`);
+ return `<h2>${V.e?'Modifier':'Nouveau'} véhicule</h2><div class="card">
+ ${i('m','Marque',x.marque)}${i('d','Modèle',x.modele)}${i('mo','Moteur',x.moteur)}${i('an','Année',x.annee,'number')}${i('pn','Type de pneu',x.pneu)}${i('im','Immatriculation',x.immat)}${i('rs','Volume réservoir (L)',x.reservoir,'number')}${i('pp','Propriétaire',x.proprio)}
+ <label class="cb" style="margin-top:14px"><input type="checkbox" id="mn" ${x.main?'checked':''}>Voiture principale</label>
+ <label>Carburants acceptés (avec conversion possible)</label>
+ ${FU.map((u,k)=>`<label class="cb"><input type="checkbox" id="cb${k}" ${(x.fuels||[]).includes(u)?'checked':''}>${u}</label>`).join('')}
+ </div>
+ <div class="card"><div class="k">Assurance</div><div id="tars">${(x.assur&&x.assur.length?x.assur:[{}]).map((t,i)=>tarRow(t,i)).join('')}</div><button type="button" style="width:100%;margin-top:14px" onclick="addTar()">Nouveau tarif</button></div>
+ <div class="card"><div class="k">État des consommables à la réception du véhicule</div>${i('ik','Km du dernier plein',ini.km,'number')}${i('ip','Prix du dernier plein (€/L)',ini.ppl,'number')}${i('k0','Km des pneus estimé',x.km0,'number')}</div>
+ <button class="pr sv" onclick="saveCar()">Enregistrer</button>`}
+const tarRow=(t,i)=>`<div class="tar"><div class="two"><div>${fld('À partir du',`<input class="td" type="date" value="${t.date||''}">`)}</div><div>${fld('Coût (€)',`<input class="te" type="number" inputmode="decimal" value="${t.eur==null?'':t.eur}">`)}</div></div>
+ <div class="row" style="margin-top:6px"><label class="cb"><input type="radio" name="tp${i}" value="annuel" ${t.per!='mensuel'?'checked':''}>Annuel</label><label class="cb"><input type="radio" name="tp${i}" value="mensuel" ${t.per=='mensuel'?'checked':''}>Mensuel</label><button type="button" class="ib" style="flex:none" aria-label="Supprimer ce tarif" onclick="this.closest('.tar').remove()">${ic('x')}</button></div></div>`;
+function addTar(){V.ti=(V.ti||0)+1;$('tars').insertAdjacentHTML('beforeend',tarRow({},1000+V.ti))}
+function readTar(){const out=[];let bad=false;document.querySelectorAll('#tars .tar').forEach(r=>{const d=r.querySelector('.td').value,e=r.querySelector('.te').value,p=r.querySelector('input[type=radio]:checked');
+ if(!d&&e==='')return;if(!d||e===''){bad=true;return}out.push({date:d,eur:+e,per:p?p.value:'annuel'})});
+ return bad?false:out.sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0)}
+function saveCar(){const id=V.e||Date.now();const AS=readTar();if(AS===false){alert("Complétez la date et le coût de chaque tarif d'assurance");return}
+ const o={id,marque:v('m'),modele:v('d'),moteur:v('mo'),annee:v('an'),pneu:v('pn'),immat:v('im'),reservoir:+v('rs')||0,km0:v('k0')===''?null:+v('k0'),proprio:v('pp'),main:$('mn').checked,fuels:FU.filter((u,k)=>$('cb'+k).checked),assur:AS};
+ if(!o.marque&&!o.modele){alert('Indiquez au moins la marque ou le modèle');return}
+ if(o.main)S.cars.forEach(c=>c.main=false);
+ const i=S.cars.findIndex(c=>c.id==id);i<0?S.cars.push(o):S.cars[i]=o;
+ if(!S.sel||o.main)S.sel=id;
+ S.log=S.log.filter(e=>!(e.car==id&&e.init));const ik=+v('ik');
+ if(ik)S.log.push({id:Date.now(),car:id,type:'fuel',init:true,date:today(),km:ik,vol:0,eur:0,ppl:+v('ip')||0,full:true,eth:null});
+ save();go('params')}
+function delCar(id){if(V.d!='c'+id){V.d='c'+id;render();return}V.d=null;S.cars=S.cars.filter(c=>c.id!=id);S.log=S.log.filter(e=>e.car!=id);if(S.sel==id)S.sel=null;save();render()}
+
+function fuelV(){const c=cur2();if(!c)return need();const l=ent(c.id,'fuel').pop(),fs=(c.fuels&&c.fuels.length)?c.fuels:FU;
+ return `<h2>Entrée carburant</h2><div class="card">${carSel()}
+ <div class="two"><div>${fld('Date',`<input id="dt" type="date" value="${today()}">`)}</div><div>${fld('KM',`<input id="k" type="number" inputmode="numeric" oninput="up2()" placeholder="${l?'dernier : '+l.km:''}">`)}</div></div>
+ <label class="cb" style="margin-top:12px"><input type="checkbox" id="fpe" onchange="$('py').value=this.checked?'perso':'';up2()">Perso</label>
+ <div class="info" id="pi" style="display:none"></div>
+ ${fld('Carburant',`<select id="ff" onchange="upd()">${fs.map(u=>`<option>${u}</option>`).join('')}</select>`)}
+ <div id="e85" style="display:none">
+ ${fld('Volume dispo (L)',`<input id="fx" type="number" inputmode="decimal" oninput="upd()">`)}
+ ${fld('% éthanol voulu',`<input id="ft" type="number" inputmode="decimal" oninput="upd()">`)}
+ <div class="info" id="tb"></div></div>
+ <div class="two"><div>${fld('Volume mis (L)',`<input id="fv" type="number" inputmode="decimal" oninput="up2()">`)}</div><div>${fld('Montant payé (€)',`<input id="fe" type="number" inputmode="decimal" oninput="up2()">`)}</div></div>
+ <label class="cb" style="margin-top:12px"><input type="checkbox" id="fp">Plein</label>
+ ${fld('Payé par',`<select id="py"><option value="">Entreprise</option><option value="perso">Moi (perso)</option></select>`)}</div>
+ <button class="pr sv" onclick="addF()">Enregistrer</button>`}
+function pc(){const c=cur2(),km=+v('k'),l=ent(c.id).filter(mk).pop(),s=stats(c.id).F,vol=+v('fv'),eur=+v('fe');
+ if(!km||!l||km<=l.km)return{err:'Saisissez un kilométrage supérieur au dernier relevé'+(l?' ('+l.km+' km)':'')+'.'};
+ if(s.vol==null)return{err:'Moyenne de consommation indisponible : il faut au moins 2 pleins enregistrés.'};
+ const d=km-l.km,L=d*s.vol/100;let ppl,src;
+ if(vol&&eur){ppl=eur/vol;src='ce plein'}else{const lf=ent(c.id,'fuel').filter(e=>e.vol>0).pop();
+  if(lf){ppl=lf.eur/lf.vol;src='dernier plein'}else{const i=S.log.find(e=>e.car==c.id&&e.init&&e.ppl);if(i){ppl=i.ppl;src='prix de départ'}}}
+ return{d,L,ppl,src,cons:s.vol,pay:ppl?L*ppl:null}}
+function up2(){const b=$('pi');if(!$('fpe').checked){b.style.display='none';return}
+ const o=pc();b.style.display='block';
+ if(o.err){b.textContent=o.err;return}
+ b.innerHTML=`Trajet perso : <b>${f(o.d,0)} km</b> × ${f(o.cons)} L/100km = <b>${f(o.L,1)} L</b>`}
+function calc(){const c=cur2(),fu=v('ff'),R=+c.reservoir||0,Vm=+v('fx')||0,rest=R?Math.max(R-Vm,0):0,plein=$('fp').checked;
+ const l=ent(c.id,'fuel').pop(),e0=l&&l.eth!=null?l.eth:5;
+ const add=+v('fv')||(plein?Vm:0);
+ const eth=rest+add>0?(rest*e0+add*ET[fu])/(rest+add):0;return{c,fu,R,Vm,rest,plein,e0,add,eth}}
+function upd(){const o=calc(),b=$('tb');$('e85').style.display=o.fu=='E85'?'block':'none';if(o.fu!='E85')return;
+ if(!o.Vm||v('ft')===''){b.innerHTML='Renseignez le volume max disponible et le % éthanol objectif pour voir les quantités d\'E85.';return}
+ const T=+v('ft'),tot=o.rest+o.Vm;
+ const rows=['98','95-E10','95-E5'].map(u=>{const ef=ET[u],raw=(T*tot-o.rest*o.e0-o.Vm*ef)/(85-ef),x=Math.min(Math.max(raw,0),o.Vm),y=o.Vm-x,fin=(o.rest*o.e0+x*85+y*ef)/tot;
+  const w=raw<0?'objectif déjà dépassé':raw>o.Vm?'objectif non atteignable':'';
+  return `<tr><td>${u}</td><td><b>${f(x,1)} L</b></td><td>${f(y,1)} L</td><td>${f(fin,0)} %</td></tr>`+(w?`<tr><td colspan="4" class="wa" style="font-size:12px">${u} : ${w}</td></tr>`:'')}).join('');
+ b.innerHTML=`<div class="k">Réservoir actuel estimé : ${f(o.rest,1)} L à ${f(o.e0,0)} % d'éthanol</div>
+ <table style="width:100%;border-collapse:collapse;margin-top:8px;text-align:left"><tr class="k"><th>Compléter avec</th><th>E85</th><th>Complément</th><th>Éthanol final</th></tr>${rows}</table>`}
+function addF(){const o=calc(),km=+v('k'),vol=o.add,eur=+v('fe');
+ if(!km||!vol||!eur){alert('KM, volume (ou plein) et montant sont nécessaires');return}
+ const pe=$('fpe').checked?pc():null;if(pe&&pe.err){alert(pe.err);return}
+ S.log.push({id:Date.now(),car:o.c.id,type:'fuel',date:v('dt'),km,vol,eur,fuel:o.fu,full:o.plein,eth:o.eth,perso:!!pe,pkm:pe?pe.d:null,pL:pe?pe.L:null,payer:v('py')||'pro'});save();go('home')}
+
+function simple(t){const c=cur2();if(!c)return need();
+ return `<h2>${t=='tyre'?'Nouvelle entrée pneumatique':'Nouvelle entrée entretien'}</h2><div class="card">${carSel()}
+ ${t=='maint'?fld('Type',`<select id="sb"><option>Vidange</option><option>Accessoire</option><option>Réparation</option><option>Lavage</option></select>`):fld('Type',`<select id="sb" onchange="tnShow()"><option>Remplacement</option><option>Réparation</option></select>`)+`<div id="tnw">${fld('Nombre de pneus changés',`<select id="tn">${[1,2,3,4].map(k=>`<option ${k==4?'selected':''}>${k}</option>`).join('')}</select>`)}</div>`}
+ <div class="two"><div>${fld('Date',`<input id="dt" type="date" value="${today()}">`)}</div><div>${fld('KM',`<input id="k" type="number" inputmode="numeric">`)}</div></div>
+ ${fld('Montant (€)',`<input id="fe" type="number" inputmode="decimal">`)}</div>
+ <button class="pr sv" onclick="addS('${t}')">Enregistrer</button>`}
+function tnShow(){const w=$('tnw');if(w)w.style.display=v('sb')=='Remplacement'?'block':'none'}
+function addS(t){const c=cur2(),km=+v('k'),eur=+v('fe');if(v('k')===''||isNaN(km)||isNaN(eur)||v('fe')===''){alert('KM et montant nécessaires');return}
+ S.log.push({id:Date.now(),car:c.id,type:t,sub:t=='maint'||t=='tyre'?v('sb'):null,nb:t=='tyre'&&v('sb')=='Remplacement'?+v('tn'):null,date:v('dt'),km,eur});save();go('home')}
+
+function kmV(){const c=cur2();if(!c)return need();const l=ent(c.id),last=l[l.length-1];
+ const dl=mdl(l),bs={};l.forEach(e=>{if(e.site&&dl[e.id]!=null){const o=bs[e.site]||(bs[e.site]={n:0,km:0});o.n++;o.km+=dl[e.id]}});
+ const sc=Object.keys(bs).length?`<div class="card"><div class="k">Km par site (depuis le relevé précédent)</div>${Object.keys(bs).sort((a,b)=>bs[b].n-bs[a].n||bs[b].km-bs[a].km).map(x=>`<div class="li"><span>${ic('pin')} ${x}<br><span class="k">${bs[x].n} trajet${bs[x].n>1?'s':''}</span></span><b>${f(bs[x].km,0)} km</b></div>`).join('')}</div>`:'';
+ const ref=t=>ent(c.id,t).filter(e=>t!='tyre'||e.sub!='Réparation').pop(),since=t=>{const e=ref(t);return e&&last?f(last.km-e.km,0)+' km':'—'},
+ rw=(l,t)=>{const e=ref(t);return `<div class="li" style="font-size:14px;padding:6px 0"><span>${l}${e?` <span class="k">(à ${f(e.km,0)} km)</span>`:''}</span><b style="white-space:nowrap">${since(t)}</b></div>`};
+ const lab={fuel:ic('fuel')+' Carburant',tyre:ic('tyre')+' Pneus',maint:ic('wrench')+' Entretien',km:ic('pin')+' Relevé'};
+ return `<h2>Suivi des km</h2>${carSel()}
+ <div class="card" style="margin-top:12px"><div class="k">Dernier relevé</div><div class="big">${last?f(last.km,0):'—'} <span class="u">km</span></div>
+ <div style="margin-top:12px;border-top:1px solid var(--bd);padding-top:4px">${rw('Depuis dernier plein','fuel')}${rw('Depuis dernier pneu','tyre')}${rw('Depuis dernier entretien','maint')}</div></div>
+ <div class="card"><div class="row"><input id="k" type="number" inputmode="numeric" placeholder="Km actuel"><button class="pr" style="margin:0" onclick="addK()">Ajouter</button></div>
+ <div class="row" style="margin-top:6px"><label class="cb"><input type="checkbox" id="kp" onchange="ps()">Pro</label><label class="cb"><input type="checkbox" id="ks">Perso</label></div>${siteBlk('',false)}</div>
+ ${sc}<div class="card"><div class="k">Historique</div>${l.slice().reverse().slice(0,30).map(e=>`<div class="li"><span>${lab[e.type]}${e.sub?' · '+e.sub:''}${e.nb?' · '+e.nb+' pneu'+(e.nb>1?'s':''):''}${e.pro||e.perso?' · '+[e.pro?'Pro':'',e.perso?'Perso':''].filter(Boolean).join('/'):''}${e.site?' · '+ic('pin')+e.site+(dl[e.id]!=null?' (+'+f(dl[e.id],0)+' km)':''):''}<br><span class="k">${dfr(e.date)} · ${f(e.km,0)} km${e.init?' · départ '+f(e.ppl)+' €/L':e.eur!=null?' · '+f(e.eur)+' €':''}${e.vol?' · '+f(e.vol,1)+' L':''}${e.perso?' · Perso '+f(e.pkm,0)+' km'+(e.pL!=null?' = '+f(e.pL,1)+' L':''):''}</span></span><span><button class="ib" aria-label="Modifier" onclick="V.i=${e.id};go('ed')">${ic('edit')}</button> <button class="ib ${V.d!=null&&V.d==e.id?'dg':''}" aria-label="Supprimer" onclick="delE(${e.id})">${V.d!=null&&V.d==e.id?'Supprimer ?':ic('x')}</button></span></div>`).join('')||'<span class="k">Vide</span>'}</div>`}
+const siteList=()=>{const n={};S.log.forEach(e=>{if(e.site)n[e.site]=(n[e.site]||0)+1});return(S.sites||[]).slice().sort((a,b)=>(n[b]||0)-(n[a]||0))};
+const siteBlk=(sel,show)=>`<div id="sw" style="display:${show?'block':'none'}">${fld('Site visité',`<select id="ksite" onchange="ts()"><option value="">— choisir —</option>${siteList().map(x=>`<option ${x==sel?'selected':''}>${x}</option>`).join('')}<option value="__new">➕ Nouveau site</option></select>`)}<input id="kn" placeholder="Nom du nouveau site" style="display:none;margin-top:8px"></div>`;
+function ps(){$('sw').style.display=$('kp').checked?'block':'none'}
+function ts(){$('kn').style.display=v('ksite')=='__new'?'block':'none'}
+function getSite(){if(!$('kp').checked)return null;let x=v('ksite');
+ if(x=='__new'){x=v('kn').trim();if(x&&!S.sites.includes(x))S.sites.push(x)}
+ if(!x){alert('Choisissez ou saisissez un site');return false}return x}
+function addK(){const km=+v('k');if(!km)return;const st=getSite();if(st===false)return;S.log.push({id:Date.now(),car:cur2().id,type:'km',date:today(),km,pro:$('kp').checked,perso:$('ks').checked,site:st});save();render()}
+function delE(id){if(V.d!=id){V.d=id;render();return}V.d=null;S.log=S.log.filter(e=>e.id!=id);save();render()}
+
+function editV(){const e=S.log.find(x=>x.id==V.i);if(!e)return '<div class="card">Entrée introuvable</div>';
+ const i=(id,l,val)=>fld(l,`<input id="${id}" type="number" inputmode="decimal" value="${val==null?'':val}">`);
+ let h=`<h2>Modifier l'entrée</h2><div class="card">${fld('Date',`<input id="dt" type="date" value="${e.date||''}">`)}${i('k','KM',e.km)}`;
+ if(e.type=='fuel'&&e.init)h+=i('fq','Prix (€/L)',e.ppl);
+ else if(e.type=='fuel')h+=fld('Carburant',`<select id="ff">${FU.map(u=>`<option ${u==e.fuel?'selected':''}>${u}</option>`).join('')}</select>`)+i('fv','Volume mis (L)',e.vol)+i('fe','Montant payé (€)',e.eur)+fld('Payé par',`<select id="py"><option value="">Entreprise</option><option value="perso" ${e.payer=='perso'?'selected':''}>Moi (perso)</option></select>`)+`<label class="cb" style="margin-top:12px"><input type="checkbox" id="fp" ${e.full?'checked':''}>Plein</label>`;
+ else if(e.type=='maint')h+=fld('Type',`<select id="sb">${['Vidange','Accessoire','Réparation','Lavage'].map(u=>`<option ${u==e.sub?'selected':''}>${u}</option>`).join('')}</select>`)+i('fe','Montant (€)',e.eur);
+ else if(e.type=='tyre')h+=fld('Type',`<select id="sb" onchange="tnShow()">${['Remplacement','Réparation'].map(u=>`<option ${u==(e.sub||'Remplacement')?'selected':''}>${u}</option>`).join('')}</select>`)+`<div id="tnw" style="display:${(e.sub||'Remplacement')=='Remplacement'?'block':'none'}">${fld('Nombre de pneus changés',`<select id="tn">${[1,2,3,4].map(k=>`<option ${k==(e.nb||4)?'selected':''}>${k}</option>`).join('')}</select>`)}</div>`+i('fe','Montant (€)',e.eur);
+ else if(e.type=='km')h+=`<label class="cb" style="margin-top:12px"><input type="checkbox" id="kp" onchange="ps()" ${e.pro?'checked':''}>Pro</label><label class="cb"><input type="checkbox" id="ks" ${e.perso?'checked':''}>Perso</label>`+siteBlk(e.site,e.pro);
+ return h+`</div><button class="pr sv" onclick="saveE()">Enregistrer</button>`}
+function saveE(){const e=S.log.find(x=>x.id==V.i),km=+v('k');if(v('k')===''||isNaN(km)){alert('KM nécessaire');return}
+ if(e.type=='fuel'&&!e.init){const vol=+v('fv');if(!vol||v('fe')===''){alert('Volume et montant nécessaires');return}
+  if(v('ff')!=e.fuel)e.eth=ET[v('ff')];e.fuel=v('ff');e.vol=vol;e.eur=+v('fe');e.full=$('fp').checked;e.payer=v('py')||'pro'}
+ else if(e.type=='fuel')e.ppl=+v('fq')||0;
+ else if(e.type=='km'){const st=getSite();if(st===false)return;e.pro=$('kp').checked;e.perso=$('ks').checked;e.site=st}
+ else if(e.type=='maint'||e.type=='tyre'){if(v('fe')===''){alert('Montant nécessaire');return}e.eur=+v('fe');e.sub=v('sb');if(e.type=='tyre')e.nb=e.sub=='Remplacement'?+v('tn'):null}
+ e.date=v('dt');e.km=km;save();go('km')}
+const MOIS=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const PC=['#0b6e4f','#e07a1f','#2f6fdb','#c2185b','#7b5ea7','#2aa198','#b58900','#d33682','#6c71c4','#859900'],hx=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+function pieHtml(d){const T=d.reduce((a,x)=>a+x.km,0);let a0=-Math.PI/2,h='';
+ d.forEach(x=>{const a1=a0+x.km/T*2*Math.PI,X=a=>(100+90*Math.cos(a)).toFixed(2),Y=a=>(100+90*Math.sin(a)).toFixed(2);
+  h+=d.length==1?`<circle cx="100" cy="100" r="90" fill="${x.c}"/>`:`<path d="M100 100L${X(a0)} ${Y(a0)}A90 90 0 ${a1-a0>Math.PI?1:0} 1 ${X(a1)} ${Y(a1)}Z" fill="${x.c}" stroke="var(--card)" stroke-width="1.5"/>`;a0=a1});
+ return `<svg viewBox="0 0 200 200" style="width:190px;height:190px;display:block;margin:6px auto">${h}</svg>`+d.map(x=>`<div class="li"><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${x.c};margin-right:8px"></span>${x.n}</span><b>${f(x.km,0)} km · ${f(x.km/T*100,0)} %</b></div>`).join('')}
+const pn=()=>V.rm?MOIS[V.rm-1]+' '+V.ry:'Année '+V.ry;
+function recap(cid,y,m){const l=ent(cid),pre=y+(m?'-'+String(m).padStart(2,'0'):''),st=pre+(m?'-01':'-01-01');
+ const dl=mdl(l);
+ const inP=l.filter(e=>e.date&&e.date.startsWith(pre)),bf=l.filter(e=>e.date&&e.date<st),r={n:inP.length};
+ r.tl=(S.tolls||[]).filter(t=>t.car==cid&&t.date&&t.date.startsWith(pre)).reduce((a,t)=>a+(t.eur||0),0);if(!inP.length)return r;
+ const bm=bf.filter(mk);r.k0=bm.length?bm[bm.length-1].km:inP[0].km;r.k1=inP[inP.length-1].km;r.km=r.k1-r.k0;
+ const fl=ent(cid,'fuel'),fin=fl.filter(e=>e.date&&e.date.startsWith(pre)),fb=fl.filter(e=>e.date&&e.date<st);
+ const fbf=fb.filter(e=>e.full);const FR=frate((fbf.length?[fbf[fbf.length-1]]:[]).concat(fin),true);r.cons=FR.vol;r.e100=FR.eur;r.L=fin.reduce((a,e)=>a+(e.vol||0),0);r.fe=fin.reduce((a,e)=>a+(e.eur||0),0);{const cf=fin.filter(e=>e.payer!='perso'),sf=fin.filter(e=>e.payer=='perso'),su=(a,k)=>a.reduce((x,e)=>x+(e[k]||0),0);r.Lc=su(cf,'vol');r.fc=su(cf,'eur');r.Ls=su(sf,'vol');r.fs=su(sf,'eur')}r.pl=Math.min(fin.filter(e=>e.perso).reduce((a,e)=>a+(e.pL||0),0),r.L);
+ let pro=0,pe=0,mx=0,pls=0;const bs={};r.pd=[];
+ inP.forEach(e=>{const d=dl[e.id];if(d==null||d<=0)return;
+  if(e.pro&&e.perso)mx+=d;else if(e.pro){pro+=d;const x=e.site||'(sans site)';const o=bs[x]||(bs[x]={n:0,km:0});o.n++;o.km+=d}else if(e.perso){pe+=d;const lt=e.pL!=null?e.pL:(r.cons!=null?d*r.cons/100:null);if(lt!=null)pls+=lt;r.pd.push([e.date,d,lt])}});
+ r.pl=Math.min(pls,r.L);r.pro=pro;r.perso=pe;r.mx=mx;r.nc=Math.max(r.km-pro-pe-mx,0);
+ r.sites=Object.keys(bs).map(k=>({s:k,n:bs[k].n,km:bs[k].km})).sort((a,b)=>b.n-a.n||b.km-a.km);return r}
+function secs(r,e){if(!r.n)return[];const p=x=>r.km>0?f(x/r.km*100,0)+' %':'-',N=e&&e.N,A=(x,d,u)=>N&&x!=null?f(x/N,d)+u:'-',H=['','Période','Moy. 12 mois'];
+ const o=[{t:'Kilométrage',head:H,rows:[['Km début de période',f(r.k0,0),''],['Km fin de période',f(r.k1,0),''],['Km parcourus',f(r.km,0)+' km',A(e&&e.km,0,' km/mois')],['Mois pris en compte','',N?String(N):'-']]},
+ {t:'Carburant',head:H,rows:[['Consommation moyenne',r.cons!=null?f(r.cons)+' L/100 km':'non calculable',e&&e.cons!=null?f(e.cons)+' L/100 km':'-'],['Prix moyen entreprise',r.Lc>0?f(r.fc/r.Lc)+' EUR/L':'-',e&&e.pr!=null?f(e.pr)+' EUR/L':'-'],['Coût carburant entreprise',r.e100!=null?f(r.e100)+' EUR/100 km':'-',e&&e.e100!=null?f(e.e100)+' EUR/100 km':'-'],['Total carburant',f(r.L,1)+' L',A(e&&e.L,1,' L/mois')],['dont pro',f(r.L-r.pl,1)+' L',A(e&&e.L-e.pl,1,' L/mois')],['dont perso',f(r.pl,1)+' L',A(e&&e.pl,1,' L/mois')]]},
+ {t:'Répartition pro / perso',head:H,rows:[['Pro',f(r.pro,0)+' km ('+p(r.pro)+')',A(e&&e.pro,0,' km/mois')],['Perso',f(r.perso,0)+' km ('+p(r.perso)+')',A(e&&e.pe,0,' km/mois')]].concat(r.mx||(e&&e.mx)?[['Mixte',f(r.mx,0)+' km ('+p(r.mx)+')',A(e&&e.mx,0,' km/mois')]]:[]).concat([['Non classé',f(r.nc,0)+' km ('+p(r.nc)+')',A(e&&e.nc,0,' km/mois')]])}];
+ const pie=r.sites.map((x,i)=>({n:x.s,km:x.km,c:PC[i%PC.length]})).concat(r.perso>0?[{n:'Perso',km:r.perso,c:'#6b7380'}]:[]).filter(x=>x.km>0);
+ if(pie.length)o.push({t:'Ventilation des km (sites pro et perso)',pie});return o}
+function secsP(r,e){if(!r.n)return[];const N=e&&e.N,A=(x,d,u)=>N&&x!=null?f(x/N,d)+u:'-',H=['','Période','Moy. 12 mois'],pu=r.Ls>0?r.fs/r.Ls:(r.L>0?r.fe/r.L:null),eu=e&&(e.prs!=null?e.prs:e.pr);
+ const o=[{t:'Perso',head:H,rows:[['Km perso',f(r.perso,0)+' km',A(e&&e.pe,0,' km/mois')],['Part des km totaux',r.km>0?f(r.perso/r.km*100,0)+' %':'-',e&&e.km>0?f(e.pe/e.km*100,0)+' %':'-'],['Carburant perso',f(r.pl,1)+' L',A(e&&e.pl,1,' L/mois')],['Consommation moyenne',r.cons!=null?f(r.cons)+' L/100 km':'non calculable',e&&e.cons!=null?f(e.cons)+' L/100 km':'-'],['Prix moyen perso',pu!=null?f(pu)+' EUR/L':'-',eu!=null?f(eu)+' EUR/L':'-'],['Carburant perso (EUR)',pu!=null?f(r.pl*pu)+' EUR':'-',eu!=null&&N?f(e.pl*eu/N)+' EUR/mois':'-'],...(r.tl>0||(e&&e.tl>0)?[['Péages perso',f(r.tl)+' EUR',A(e&&e.tl,2,' EUR/mois')],['Péage moyen perso',r.perso>0?f(r.tl/r.perso,3)+' EUR/km':'-',e&&e.pe>0?f(e.tl/e.pe,3)+' EUR/km':'-'],['Total perso',f((pu!=null?r.pl*pu:0)+r.tl)+' EUR',eu!=null&&N?f((e.pl*eu+e.tl)/N)+' EUR/mois':'-']]:[]),['Mois pris en compte','',N?String(N):'-']]}];
+ if(r.pd.length)o.push({t:'Détail des trajets perso',head:['Date','Km','Litres','EUR'],rows:r.pd.map(x=>[x[0]?x[0].split('-').reverse().join('/'):'-',f(x[1],0),x[2]!=null?f(x[2],1):'-',x[2]!=null&&pu!=null?f(x[2]*pu+x[1]*(r.perso>0?r.tl/r.perso:0)):'-'])});return o}
+function evo(cid,y,m){const n=new Date(),em=m||(y==n.getFullYear()?n.getMonth()+1:12);let sm=em-11,sy=y;while(sm<1){sm+=12;sy--}
+ const a=sy+'-'+String(sm).padStart(2,'0')+'-01',b=y+'-'+String(em).padStart(2,'0')+'-32',t={N:0,km:0,pro:0,pe:0,mx:0,nc:0,pl:0,tl:0};
+ for(let i=0;i<12;i++){let mm=sm+i,yy=sy;while(mm>12){mm-=12;yy++}const q=recap(cid,yy,mm);if(q.n){t.N++;t.km+=q.km;t.pro+=q.pro;t.pe+=q.perso;t.mx+=q.mx;t.nc+=q.nc;t.pl+=q.pl}t.tl+=q.tl||0}
+ const fl=ent(cid,'fuel'),fin=fl.filter(x=>x.date&&x.date>=a&&x.date<b),fbf=fl.filter(x=>x.date&&x.date<a&&x.full);
+ const FR=frate((fbf.length?[fbf[fbf.length-1]]:[]).concat(fin),true);t.cons=FR.vol;t.e100=FR.eur;t.L=fin.reduce((x,e)=>x+(e.vol||0),0);const E=fin.reduce((x,e)=>x+(e.eur||0),0);
+ {const cf=fin.filter(x=>x.payer!='perso'),sf=fin.filter(x=>x.payer=='perso'),su=(a,k)=>a.reduce((x,e)=>x+(e[k]||0),0),lc=su(cf,'vol'),ls=su(sf,'vol');t.pr=lc>0?su(cf,'eur')/lc:null;t.prs=ls>0?su(sf,'eur')/ls:null}return t}
+function rcV(){const c=cur2();if(!c)return need();const ys=new Set([new Date().getFullYear()]);ent(c.id).forEach(e=>e.date&&ys.add(+e.date.slice(0,4)));
+ if(V.ry==null){const ds=ent(c.id).map(e=>e.date).filter(Boolean).sort(),d=ds[ds.length-1]||today();V.ry=+d.slice(0,4);V.rm=+d.slice(5,7)}
+ return `<h2>Récap PDF</h2><div class="card">${carSel()}${fld('Type de récap',`<select id="rt" autocomplete="off" onchange="rcR()"><option value="">Complet</option><option value="p" ${V.rt=='p'?'selected':''}>Perso</option></select>`)}${fld('Année',`<select id="ry" autocomplete="off" onchange="rcR()">${[...ys].sort().reverse().map(y=>`<option ${y==V.ry?'selected':''}>${y}</option>`).join('')}</select>`)}${fld('Période',`<select id="rm" autocomplete="off" onchange="rcR()"><option value="0">Année complète</option>${MOIS.map((x,i)=>`<option value="${i+1}" ${i+1==V.rm?'selected':''}>${x}</option>`).join('')}</select>`)}</div><div id="rp"></div><button class="pr sv" onclick="makePdf()">Générer le PDF</button>`}
+function rcR(){V.ry=+v('ry');V.rm=+v('rm');V.rt=v('rt');const cc=cur2().id,mo=[...new Set(ent(cc).map(e=>e.date&&e.date.slice(0,7)).filter(Boolean))].sort().map(x=>MOIS[+x.slice(5)-1]+' '+x.slice(0,4)).join(', '),ss=(V.rt=='p'?secsP:secs)(recap(cc,V.ry,V.rm),evo(cc,V.ry,V.rm));
+ $('rp').innerHTML=ss.length?ss.map(s=>`<div class="card"><div class="k">${s.t}</div>`+(s.pie?pieHtml(s.pie):s.head?`<table style="width:100%;border-collapse:collapse;text-align:left"><tr class="k">${s.head.map(h=>`<th>${h}</th>`).join('')}</tr>${s.rows.map(w=>`<tr>${w.map(x=>`<td>${x}</td>`).join('')}</tr>`).join('')}</table>`:s.rows.map(w=>`<div class="li"><span>${w[0]}</span><b>${w[1]}</b></div>`).join(''))+`</div>`).join(''):'<div class="card k">Aucune donnée sur cette période.'+(mo?'<br>Données disponibles : '+mo+'.':'<br>Aucune entrée datée pour ce véhicule.')+'</div>'}
+async function makePdf(){const c=cur2(),r=recap(c.id,V.ry,V.rm);if(!r.n){alert('Aucune donnée sur cette période');return}
+ const J=window.jspdf&&window.jspdf.jsPDF;if(!J){alert('Générateur PDF indisponible');return}
+ const doc=new J({unit:'mm',format:'a4'});let y=20;
+ doc.setFontSize(18);doc.text(V.rt=='p'?'Récapitulatif perso':'Récapitulatif véhicule',15,y);y+=8;doc.setFontSize(12);doc.text(pn(),15,y);y+=6;
+ doc.setFontSize(10);doc.setTextColor(100);doc.text(nm(c)+(c.immat?' - '+c.immat:'')+(c.proprio?' - Propriétaire : '+c.proprio:''),15,y);y+=5;
+ doc.text('Édité le '+new Date().toLocaleDateString('fr-FR'),15,y);doc.setTextColor(0);y+=10;
+ const ss=(V.rt=='p'?secsP:secs)(r,evo(c.id,V.ry,V.rm));ss.forEach(s=>{if(y>(s.pie?212:250)){doc.addPage();y=20}
+  doc.setFontSize(13);doc.setFont(undefined,'bold');doc.text(s.t,15,y);y+=2;doc.setDrawColor(180);doc.line(15,y,195,y);y+=6;
+  doc.setFontSize(11);doc.setFont(undefined,'normal');const X=s.head&&s.head.length==3?[15,100,150]:[15,115,142,168];
+  if(s.pie){const T=s.pie.reduce((a,x)=>a+x.km,0),cx=55,cy=y+30,R=28;let a0=-Math.PI/2;
+   s.pie.forEach(x=>{const a1=a0+x.km/T*2*Math.PI,n=Math.max(2,Math.ceil((a1-a0)/0.05)),pts=[[cx,cy]];for(let i=0;i<=n;i++){const a=a0+(a1-a0)*i/n;pts.push([cx+R*Math.cos(a),cy+R*Math.sin(a)])}
+    const c=hx(x.c);doc.setFillColor(c[0],c[1],c[2]);doc.setDrawColor(255,255,255);doc.lines(pts.slice(1).map((q,i)=>[q[0]-pts[i][0],q[1]-pts[i][1]]),pts[0][0],pts[0][1],[1,1],'FD',true);a0=a1});
+   let ly=y+8;s.pie.forEach(x=>{const c=hx(x.c);doc.setFillColor(c[0],c[1],c[2]);doc.rect(95,ly-3,3.5,3.5,'F');doc.text(x.n.slice(0,18),101,ly);doc.text(f(x.km,0)+' km - '+f(x.km/T*100,0)+' %',195,ly,{align:'right'});ly+=6});
+   y=Math.max(y+64,ly+2);doc.setDrawColor(180);return}
+  if(s.head){doc.setFont(undefined,'bold');s.head.forEach((t,i)=>doc.text(t,X[i],y));y+=6;doc.setFont(undefined,'normal')}
+  s.rows.forEach(w=>{if(y>280){doc.addPage();y=20}
+   if(s.head)w.forEach((t,i)=>doc.text(i?t:t.slice(0,45),X[i],y));else{doc.text(w[0],15,y);doc.text(w[1],195,y,{align:'right'})}y+=6});y+=6});
+ try{await saveFile('recap-'+(c.immat||nm(c)).replace(/[^\w-]+/g,'_')+'-'+V.ry+(V.rm?'-'+String(V.rm).padStart(2,'0'):'')+(V.rt=='p'?'-perso':'')+'.pdf',doc.output('blob'),'application/pdf')}catch(e){if(!e||e.code!='declined')alert('Échec : '+((e&&(e.message||e.code))||''))}}
+function tollV(){const c=cur2();if(!c)return need();const x=S.tolls.find(t=>t.id==V.t)||{},l=S.tolls.filter(t=>t.car==c.id).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+ return `<h2>Péage perso</h2><div class="card">${carSel()}${fld('Date',`<input id="td" type="date" value="${x.date||today()}">`)}${fld('Montant (€)',`<input id="te" type="number" inputmode="decimal" value="${x.eur==null?'':x.eur}">`)}</div>
+ <button class="pr" onclick="saveT()">Enregistrer</button>
+ <div class="card" style="margin-top:12px"><div class="k">Historique · total ${f(l.reduce((a,t)=>a+t.eur,0))} €</div>${l.map(t=>`<div class="li"><span>${dfr(t.date)}<br><span class="k">${f(t.eur)} €</span></span><span><button class="ib" aria-label="Modifier" onclick="V.t=${t.id};render()">${ic('edit')}</button> <button class="ib ${V.d=='t'+t.id?'dg':''}" aria-label="Supprimer" onclick="delT(${t.id})">${V.d=='t'+t.id?'Supprimer ?':ic('x')}</button></span></div>`).join('')||'<span class="k">Vide</span>'}</div>`}
+function saveT(){const eur=+v('te'),dt=v('td');if(!(eur>0)||!dt){alert('Date et montant nécessaires');return}
+ if(V.t){const t=S.tolls.find(x=>x.id==V.t);if(t){t.date=dt;t.eur=eur}}else S.tolls.push({id:Date.now(),car:cur2().id,date:dt,eur});V.t=null;save();render()}
+function delT(id){if(V.d!='t'+id){V.d='t'+id;render();return}V.d=null;S.tolls=S.tolls.filter(t=>t.id!=id);save();render()}
+const BK={cf:'params',ed:'km'};
+function render(){const n=V.n;let h='';
+ try{if(n=='home')h=home();else if(n=='params')h=params();else if(n=='cf')h=cform();else if(n=='fuel')h=fuelV();else if(n=='tyre')h=simple('tyre');else if(n=='maint')h=simple('maint');else if(n=='ed')h=editV();else if(n=='rc')h=rcV();else if(n=='toll')h=tollV();else h=kmV()}catch(err){h=`<div class="card"><b class="wa">Erreur d'affichage</b><p class="k">${String(err&&err.message||err)}</p></div>`}
+ $('app').innerHTML=h;
+ const t=$('tabs');t.style.display=n=='home'?'none':'';t.innerHTML=n=='home'?'':`<div><button class="rt" onclick="go('${BK[n]||'home'}')">${ic('back')}Retour</button></div>`;
+ if(n=='fuel')upd();if(n=='rc')rcR();}
+const dfr=d=>d?String(d).split('-').reverse().join('/'):'';
+function fix(){S.tolls=S.tolls||[];const ok=x=>typeof x=='number'&&isFinite(x);let n=0,ch=false;const nid=()=>Date.now()+(++n);
+ const iso=d=>{const m=/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(d||'');return m?m[3]+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0'):d};
+ let first=null;
+ S.cars.filter(c=>!ok(c.id)).forEach(c=>{ch=true;const tw=S.cars.find(x=>ok(x.id)&&x.immat&&x.immat==c.immat);
+  if(tw){S.cars=S.cars.filter(x=>x!==c);if(first==null)first=tw.id}else{c.id=nid();if(first==null)first=c.id}});
+ const key=e=>['car','type','date','km','vol','eur','site','fuel','perso','pro'].map(k=>e[k]).join('|'),good=new Set();
+ S.log.forEach(e=>{if(ok(e.id)&&ok(e.car)){if(e.date!=iso(e.date)){e.date=iso(e.date);ch=true}good.add(key(e))}});
+ S.log=S.log.filter(e=>{if(ok(e.id)&&ok(e.car))return true;ch=true;
+  if(!ok(e.car))e.car=first!=null?first:(S.cars[0]&&S.cars[0].id);e.date=iso(e.date);
+  if(good.has(key(e)))return false;e.id=nid();good.add(key(e));return true});
+ if(S.sel!=null&&!car(S.sel)){S.sel=null;ch=true}
+ if(ch)save()}
+fix();
+if(S.gd&&S.gd.cid)gLoad().catch(()=>{});
+render();
+</script></body></html>
